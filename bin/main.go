@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/docker/machine/libmachine/drivers/plugin"
-	"github.com/packethost/docker-machine-driver-packet"
+	"github.com/SocketCluster/docker-machine-driver-baasil"
 )
 
 func main() {
-	plugin.RegisterDriver(new(packet.Driver))
+	plugin.RegisterDriver(new(baasil.Driver))
 }

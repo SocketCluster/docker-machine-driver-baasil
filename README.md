@@ -1,2 +1,2 @@
-# docker-machine-driver-packet
-Packet bare metal cloud driver for Docker Machine
+# docker-machine-driver-baasil
+Baasil.io cloud driver for Docker Machine

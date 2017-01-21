@@ -1,12 +1,12 @@
 default: build
 
 version := "v0.1.3"
-version_description := "Docker Machine Driver Plugin to Provision on Packet"
+version_description := "Docker Machine Driver Plugin to Provision on Baasil.io"
 human_name := "v0.1.3 - Docker Machine v0.8.2+"
 
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
-github_user := "packethost"
+github_user := "SocketCluster"
 project := "github.com/$(github_user)/$(current_dir)"
 bin_suffix := ""
 

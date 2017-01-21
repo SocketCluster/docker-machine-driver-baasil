@@ -1,4 +1,4 @@
-package packet
+package baasil
 
 import (
 	"fmt"
@@ -39,7 +39,7 @@ type Driver struct {
 }
 
 // NewDriver is a backward compatible Driver factory method.  Using
-// new(packet.Driver) is preferred.
+// new(baasil.Driver) is preferred.
 func NewDriver(hostName, storePath string) *Driver {
 	return &Driver{
 		BaseDriver: &drivers.BaseDriver{
@@ -52,72 +52,72 @@ func NewDriver(hostName, storePath string) *Driver {
 func (d *Driver) GetCreateFlags() []mcnflag.Flag {
 	return []mcnflag.Flag{
 		mcnflag.StringFlag{
-			Name:   "packet-api-key",
-			Usage:  "Packet api key",
-			EnvVar: "PACKET_API_KEY",
+			Name:   "baasil-api-key",
+			Usage:  "Baasil api key",
+			EnvVar: "BAASIL",
 		},
 		mcnflag.StringFlag{
-			Name:   "packet-project-id",
-			Usage:  "Packet Project Id",
-			EnvVar: "PACKET_PROJECT_ID",
+			Name:   "baasil-project-id",
+			Usage:  "Baasil Project Id",
+			EnvVar: "BAASIL_PROJECT_ID",
 		},
 		mcnflag.StringFlag{
-			Name:   "packet-os",
-			Usage:  fmt.Sprintf("Packet OS, possible values are: %v", strings.Join(d.getOsFlavors(), ", ")),
+			Name:   "baasil-os",
+			Usage:  fmt.Sprintf("Baasil OS, possible values are: %v", strings.Join(d.getOsFlavors(), ", ")),
 			Value:  "ubuntu_14_04",
-			EnvVar: "PACKET_OS",
+			EnvVar: "BAASIL_OS",
 		},
 		mcnflag.StringFlag{
-			Name:   "packet-facility-code",
-			Usage:  "Packet facility code",
+			Name:   "baasil-facility-code",
+			Usage:  "Baasil facility code",
 			Value:  "ewr1",
-			EnvVar: "PACKET_FACILITY_CODE",
+			EnvVar: "BAASIL_FACILITY_CODE",
 		},
 		mcnflag.StringFlag{
-			Name:   "packet-plan",
-			Usage:  "Packet Server Plan",
+			Name:   "baasil-plan",
+			Usage:  "Baasil Server Plan",
 			Value:  "baremetal_0",
-			EnvVar: "PACKET_PLAN",
+			EnvVar: "BAASIL_PLAN",
 		},
 		mcnflag.StringFlag{
-			Name:   "packet-billing-cycle",
-			Usage:  "Packet billing cycle, hourly or monthly",
+			Name:   "baasil-billing-cycle",
+			Usage:  "Baasil billing cycle, hourly or monthly",
 			Value:  "hourly",
-			EnvVar: "PACKET_BILLING_CYCLE",
+			EnvVar: "BAASIL_BILLING_CYCLE",
 		},
 		mcnflag.StringFlag{
-			Name:   "packet-userdata",
+			Name:   "baasil-userdata",
 			Usage:  "Path to file with cloud-init user-data",
-			EnvVar: "PACKET_USERDATA",
+			EnvVar: "BAASIL_USERDATA",
 		},
 	}
 }
 
 func (d *Driver) DriverName() string {
-	return "packet"
+	return "baasil"
 }
 
 func (d *Driver) SetConfigFromFlags(flags drivers.DriverOptions) error {
-	if strings.Contains(flags.String("packet-os"), "coreos") {
+	if strings.Contains(flags.String("baasil-os"), "coreos") {
 		d.SSHUser = "core"
 	}
-	if strings.Contains(flags.String("packet-os"), "rancher") {
+	if strings.Contains(flags.String("baasil-os"), "rancher") {
 		d.SSHUser = "rancher"
 	}
 
-	d.ApiKey = flags.String("packet-api-key")
-	d.ProjectID = flags.String("packet-project-id")
-	d.OperatingSystem = flags.String("packet-os")
-	d.Facility = flags.String("packet-facility-code")
-	d.Plan = flags.String("packet-plan")
-	d.BillingCycle = flags.String("packet-billing-cycle")
-	d.UserDataFile = flags.String("packet-userdata")
+	d.ApiKey = flags.String("baasil-api-key")
+	d.ProjectID = flags.String("baasil-project-id")
+	d.OperatingSystem = flags.String("baasil-os")
+	d.Facility = flags.String("baasil-facility-code")
+	d.Plan = flags.String("baasil-plan")
+	d.BillingCycle = flags.String("baasil-billing-cycle")
+	d.UserDataFile = flags.String("baasil-userdata")
 
 	if d.ApiKey == "" {
-		return fmt.Errorf("packet driver requires the --packet-api-key option")
+		return fmt.Errorf("baasil driver requires the --baasil-api-key option")
 	}
 	if d.ProjectID == "" {
-		return fmt.Errorf("packet driver requires the --packet-project-id option")
+		return fmt.Errorf("baasil driver requires the --baasil-project-id option")
 	}
 
 	return nil
@@ -136,7 +136,7 @@ func (d *Driver) PreCreateCheck() error {
 
 	flavors := d.getOsFlavors()
 	if !stringInSlice(d.OperatingSystem, flavors) {
-		return fmt.Errorf("specified --packet-os not one of %v", strings.Join(flavors, ", "))
+		return fmt.Errorf("specified --baasil-os not one of %v", strings.Join(flavors, ", "))
 	}
 
 	client := d.getClient()
@@ -150,7 +150,7 @@ func (d *Driver) PreCreateCheck() error {
 		}
 	}
 
-	return fmt.Errorf("packet requires a valid facility")
+	return fmt.Errorf("baasil requires a valid facility")
 }
 
 func (d *Driver) Create() error {
@@ -184,7 +184,7 @@ func (d *Driver) Create() error {
 		Tags:         d.Tags,
 	}
 
-	log.Info("Provisioning Packet server...")
+	log.Info("Provisioning Baasil server...")
 	newDevice, _, err := client.Devices.Create(createRequest)
 	if err != nil {
 		return err
